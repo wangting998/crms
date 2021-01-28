@@ -1,7 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
@@ -40,8 +39,8 @@
 		<td>${item.email}</td>
 		<td>${item.description}</td>
 		<td>
-			<a href="<c:url value='/edit.jsp'/>">编辑</a>
-			<a href="<c:url value='/msg.jsp'/>">删除</a>
+			<a href="<c:url value='/load?cid=${item.cid}'/>">编辑</a>
+			<a href="<c:url value='/delete?cid=${item.cid}'/>">删除</a>
 		</td>
 	</tr>
 	</c:forEach>

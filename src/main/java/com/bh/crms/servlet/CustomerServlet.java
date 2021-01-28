@@ -2,9 +2,6 @@ package com.bh.crms.servlet;
 import com.bh.crms.pojo.Customer;
 import com.bh.crms.service.CustomerService;
 import com.bh.crms.util.CustomerUtils;
-import com.bh.crms.pojo.Customer;
-import com.bh.crms.service.CustomerService;
-import com.bh.crms.util.CustomerUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -41,11 +38,9 @@ public class CustomerServlet extends HttpServlet {
          */
 
         /**
-         * 1.封装对象
          * 获取参数
          *      String cid, String cname, String gender, Date birthday,
          *      String cellphone, String email, String description
-         *      cid写死
          */
         String cid = CustomerUtils.uuid();  //2.添加cid--UUID
         String cname = request.getParameter("cname");
@@ -63,9 +58,9 @@ public class CustomerServlet extends HttpServlet {
         String cellphone = request.getParameter("cellphone");
         String email = request.getParameter("email");
         String description = request.getParameter("description");
-        Date date = new Date();
+        //Date date = new Date();   封装工具类后调用
         //构造方法
-        Customer customer = new Customer(cid,cname,gender,date1,cellphone,email,description);
+        Customer customer = new Customer(cid,cname,gender,date1,cellphone,email,description,"0");
 
         //3.调用service方法
         customerService.addCustomer(customer);

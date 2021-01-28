@@ -18,10 +18,14 @@ public class Customer {
     private String cellphone; //客户手机
     private String email; //客户邮箱
     private String description; //客户描述
+    private String ebable; //字段
 
+    /**
+     * 无餐构造  当生成有参构造时，必须生成无参构造
+     */
     public Customer() {
-
     }
+
     /**
      * 生成构造参数
      * @param cid
@@ -31,7 +35,19 @@ public class Customer {
      * @param cellphone
      * @param email
      * @param description
+     * @param ebable
      */
+    public Customer(String cid, String cname, String gender, Date birthday, String cellphone, String email, String description, String ebable) {
+        this.cid = cid;
+        this.cname = cname;
+        this.gender = gender;
+        this.birthday = birthday;
+        this.cellphone = cellphone;
+        this.email = email;
+        this.description = description;
+        this.ebable = ebable;
+    }
+
     public Customer(String cid, String cname, String gender, Date birthday, String cellphone, String email, String description) {
         this.cid = cid;
         this.cname = cname;
@@ -42,7 +58,15 @@ public class Customer {
         this.description = description;
     }
 
-    /*@Override
+    public Customer(String cname, String gender, String cellphone, String email) {
+        this.cname = cname;
+        this.gender = gender;
+        this.cellphone = cellphone;
+        this.email = email;
+    }
+
+
+    @Override
     public String toString() {
         return "Customer{" +
                 "cid='" + cid + '\'' +
@@ -53,7 +77,8 @@ public class Customer {
                 ", email='" + email + '\'' +
                 ", description='" + description + '\'' +
                 '}';
-    }*/
+    }
+
 
     /**
      * 生成get、set方法
@@ -113,5 +138,13 @@ public class Customer {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getEbable() {
+        return ebable;
+    }
+
+    public void setEbable(String ebable) {
+        this.ebable = ebable;
     }
 }
