@@ -1,5 +1,4 @@
 package com.bh.crms.servlet;
-import com.bh.crms.pojo.Customer;
 import com.bh.crms.service.CustomerService;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

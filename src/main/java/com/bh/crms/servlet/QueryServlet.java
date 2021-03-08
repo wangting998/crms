@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * 高级搜索
+ * 高级搜索/多条件组合查询
  * @Author WWT
  * @Date 2021/1/28
  */
@@ -23,12 +23,11 @@ public class QueryServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         /**
-         *1.封装对象
-         * 2.调用service对象
-         * 3.保存到request域
+         * 1.封装对象，最多有4个属性   Criteria：接口类
+         * 2.调用service方法，保存信息
+         * 3.保存查询结果到request域
          * 4.转发至list.jsp
          */
-        //获取参数
         //获取参数
         String cname = request.getParameter("cname");
         String gender = request.getParameter("gender");
@@ -37,9 +36,9 @@ public class QueryServlet extends HttpServlet {
         //1.封装对象
         Customer criteria = new Customer(cname,gender,cellphone,email);
         //2.调用service对象
-        //List<Customer> customerList = customerService.query(criteria);
+        //List<Customer> criteriaList = customerService.query(criteria);
         //3.保存到request域
-        request.setAttribute("list",customerService.query(criteria));
+        request.setAttribute("list",customerService.queryCustomer(criteria));
         //4.转发至list.jsp
         request.getRequestDispatcher("list.jsp").forward(request,response);
     }

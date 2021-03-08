@@ -5,7 +5,6 @@
 <html>
   <head>
     <title>添加客户</title>
-    
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
@@ -47,7 +46,6 @@
 			$("form").submit();
 		}
 	}
-	
 </script>
 <style type="text/css">
 	.error {color:red;}

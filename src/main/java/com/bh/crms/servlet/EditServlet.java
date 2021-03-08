@@ -2,6 +2,8 @@ package com.bh.crms.servlet;
 
 import com.bh.crms.pojo.Customer;
 import com.bh.crms.service.CustomerService;
+import com.bh.crms.util.CustomerUtils;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,21 +39,20 @@ public class EditServlet extends HttpServlet {
         String cname = request.getParameter("cname");
         String gender = request.getParameter("gender");
         String birthday = request.getParameter("birthday");
-        //日期格式
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        /*//使用工具类将时间字符串转化为日期对象
         Date date1 = null;
         try {
             //parse()是SimpleDateFomat里面的方法
-            date1 = simpleDateFormat.parse(birthday);
+            date1 = CustomerUtils.StringToDate(birthday);
         } catch (ParseException e) {
             System.out.println("转换类型失败");
-        }
+        }*/
         String cellphone = request.getParameter("cellphone");
         String email = request.getParameter("email");
         String description = request.getParameter("description");
 
         //1.封装数据到Customer对象
-        Customer customer = new Customer(cid,cname,gender,date1,cellphone,email,description);
+        Customer customer = new Customer(cid,cname,gender,birthday,cellphone,email,description);
         //2.调用service方法
         customerService.editCustomer(customer);
 

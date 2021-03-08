@@ -5,6 +5,8 @@ import com.bh.crms.util.JdbcUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.List;
  * @Author WWT
  * @Date 2021/1/27
  */
+@Repository
 public class CustomerDao {
     /**
      * 获取数据源
@@ -23,63 +26,196 @@ public class CustomerDao {
     private static QueryRunner qr = new QueryRunner(JdbcUtils.getDataSource());
 
     /**
-     * 高级搜索
+     * 多条件组合查询中的分页
+     *
+     * @param criteria
+     * @param index
+     * @param len
+     * @return
+     */
+    public List<Customer> queryByPage(Customer criteria, int index, int len) {
+        StringBuilder sql = new StringBuilder("select * from tb_customer where 1=1");
+        List<Object> params = new ArrayList<>();
+
+        String cname = criteria.getCname();
+        if (cname != null && !cname.trim().isEmpty()) {
+            sql.append(" and cname like ?");
+            params.add("%" + cname + "%");
+
+        }
+
+        String gender = criteria.getGender();
+        if (gender != null && !gender.trim().isEmpty()) {
+            sql.append(" and gender=?");
+            params.add(gender);
+
+        }
+
+        String email = criteria.getEmail();
+        if (email != null && !email.trim().isEmpty()) {
+            sql.append(" and email like ?");
+            params.add("%" + email + "%");
+
+        }
+
+        String cellphone = criteria.getCellphone();
+        if (cellphone != null && !cellphone.trim().isEmpty()) {
+            sql.append(" and cellphone like ?");
+            params.add("%" + cellphone + "%");
+        }
+
+        sql.append(" limit ?,?");
+        params.add(index);
+        params.add(len);
+        try {
+            return qr.query(sql.toString(), new BeanListHandler<Customer>(Customer.class), params.toArray());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 多条件查询中记录总数
+     *
+     * @return
+     */
+    public int countQueryPage(Customer criteria) {
+        StringBuilder sql = new StringBuilder("select count(*) from tb_customer where 1=1");
+        List<Object> params = new ArrayList<>();
+        String cname = criteria.getCname();
+        if (cname != null && !cname.trim().isEmpty()) {
+            sql.append(" and cname like ?");
+            params.add("%" + cname + "%");
+
+        }
+
+        String gender = criteria.getGender();
+        if (gender != null && !gender.trim().isEmpty()) {
+            sql.append(" and gender=?");
+            params.add(gender);
+
+        }
+
+        String cellphone = criteria.getCellphone();
+        if (cellphone != null && !cellphone.trim().isEmpty()) {
+            sql.append(" and cellphone like ?");
+            params.add("%" + cellphone + "%");
+
+        }
+
+        String email = criteria.getEmail();
+        if (email != null && !email.trim().isEmpty()) {
+            sql.append(" and email like ?");
+            params.add("%" + email + "%");
+
+        }
+        try {
+            Long cnt = (Long) qr.query(sql.toString(), new ScalarHandler(), params.toArray());
+            return cnt.intValue();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 查询所有客户记录数
+     *
+     * @return
+     */
+    public int countFindAll() {
+        /**
+         * 1.给出sql
+         * 2.调用方法
+         */
+        String sql = "select count(*) from tb_customer";
+        try {
+            Long cnt = qr.query(sql, new ScalarHandler<>());
+            return cnt.intValue();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+    /**
+     * 查询所有--带有分页功能
+     *
+     * @param index
+     * @param len
+     * @return
+     */
+    public List<Customer> findAllPage(int index, int len) {
+        /**
+         * 1.给出sql
+         * 2.调用方法
+         */
+        String sql = "select * from tb_customer limit ?,?";
+        try {
+            return qr.query(sql, new BeanListHandler<>(Customer.class), index, len);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
+     * 高级搜索/多条件组合查询,不带分页
      * @param criteria
      * @return
      */
-    public List<Customer> query(Customer criteria) {
+    public List<Customer> queryCustomer(Customer criteria) {
         /**
-         * 1.给出sql
+         * 1.拼接sql
          * 2.找参数
          * 3.调用方法
          */
-        StringBuffer sql =  new StringBuffer("select * from tb_customer where 1=1");
-        //保存参数的容器
-        List<Object> list = new ArrayList<>();
-        String cname = criteria.getCname();
-        //判断条件
-        if(cname != null && !cname.trim().isEmpty()){
-            //若不为空
-            //1、sql后拼接and cname =?
-            sql.append(" and cname like concat('%',?,'%')");
-            //2、参数保存
-            list.add(cname);
-        }
-        String gender = criteria.getGender();
-        if (gender != null && !gender.trim().isEmpty()){
-            //若不为空
-            //1、sql后拼接and gender =?
-            sql.append(" and gender = ?");
-            //2、参数保存
-            list.add(gender);
-        }
-        String cellphone = criteria.getCellphone();
-        if (cellphone != null && !cellphone.trim().isEmpty()){
-            //若不为空
-            //1、sql后拼接and cellphone =?
-            sql.append(" and cellphone like ?");
-            //list.add("%" + cellphone +"%");
-            //2、参数保存
-            list.add(cellphone);
-        }
-        String email = criteria.getEmail();
-        if(email != null && !email.trim().isEmpty()){
-            //若不为空
-            //1.sql后拼接and email =?
-            sql.append(" and email like ?");
-            //list.add("%" + email +"%");
-            //2、参数保存
-            list.add(email);
-        }
-
-
         try {
+            //拼接的sql语句
+            StringBuffer sql =  new StringBuffer("select * from tb_customer where 1=1");
+            //保存参数的容器
+            List<Object> criteriaList = new ArrayList<>();
+            //判断条件
+            String cname = criteria.getCname();
+            if(cname != null && !cname.trim().isEmpty()){
+                //若不为空
+                //1、sql后拼接and cname =?   模糊查询like
+                //CONCAT（）函数用于将多个字符串连接成一个字符串
+                sql.append(" and cname like concat('%',?,'%')");
+                //2、参数保存
+                criteriaList.add(cname);
+            }
+            String gender = criteria.getGender();
+            if (gender != null && !gender.trim().isEmpty()){
+                //若不为空
+                //1、sql后拼接and gender =?
+                sql.append(" and gender = ?");
+                //2、参数保存
+                criteriaList.add(gender);
+            }
+            String cellphone = criteria.getCellphone();
+            if (cellphone != null && !cellphone.trim().isEmpty()){
+                //若不为空
+                //1、sql后拼接and cellphone =?
+                sql.append(" and cellphone like ?");
+                //list.add("%" + cellphone +"%");
+                //2、参数保存
+                criteriaList.add(cellphone);
+            }
+            String email = criteria.getEmail();
+            if(email != null && !email.trim().isEmpty()){
+                //若不为空
+                //1.sql后拼接and email =?
+                sql.append(" and email like ?");
+                //list.add("%" + email +"%");
+                //2、参数保存
+                criteriaList.add(email);
+            }
             //3.调用方法
-            return qr.query(sql.toString(),new BeanListHandler<>(Customer.class),list.toArray());
+            return qr.query(sql.toString(),new BeanListHandler<>(Customer.class),criteriaList.toArray());
         } catch (SQLException e) {
-            System.out.println("拼接失败");
+            throw new RuntimeException(e);
         }
-        throw new RuntimeException();
     }
 
     /**
@@ -111,6 +247,7 @@ public class CustomerDao {
         /**
          * 1.给出sql
          * 2.找参数
+         * 3、update()
          */
         //1.给出sql
         String sql = "update tb_customer set cname=?,gender=?,birthday=?,\n" +
@@ -122,8 +259,8 @@ public class CustomerDao {
         };
         try {
             qr.update(sql,objects);
-        } catch (SQLException throwables) {
-            System.out.println("修改语句执行不成功");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -139,39 +276,35 @@ public class CustomerDao {
          * 3.存放容器
          */
         String sql = "select * from tb_customer where cid = ?";
-        Customer customer= null;
         try {
             /**
              * BeanHandler：单行处理器！把结果集转换成 Bean，
              * 该处理器需要 Class 参数，即 Bean 的类 型；
              */
-            customer= qr.query(sql, new BeanHandler<Customer>(Customer.class), cid);
-        } catch (SQLException throwables) {
-            System.out.println("根据id查询客户查询失败");
+            return qr.query(sql, new BeanHandler<Customer>(Customer.class), cid);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return customer;
     }
 
     /**
      * 查询所有
      * @return
      */
-    public static List findAll() {
+    public List<Customer> findAll() {
         /**
          * 1.给出sql
          * 2.找参数
          * 3.存放容器
          */
-        String sql = "select * from tb_customer where ebable = 0";
-        List<Customer> list = null;
         try {
+            String sql = "select * from tb_customer where ebable = 0";
             //BeanListHandler：多行处理器！把结果集转换成 List<Bean>；
             //query()：执行 select 语句
-            list= qr.query(sql, new BeanListHandler<>(Customer.class));
-        } catch (SQLException throwables) {
-            System.out.println("查询失败");
+            return qr.query(sql, new BeanListHandler<>(Customer.class));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return list;
     }
 
 

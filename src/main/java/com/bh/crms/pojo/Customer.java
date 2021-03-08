@@ -14,7 +14,7 @@ public class Customer {
     private String cid; //客户id
     private String cname; //客户姓名
     private String gender; //客户性别
-    private Date birthday;  //客户生日
+    private String birthday;  //客户生日
     private String cellphone; //客户手机
     private String email; //客户邮箱
     private String description; //客户描述
@@ -37,7 +37,7 @@ public class Customer {
      * @param description
      * @param ebable
      */
-    public Customer(String cid, String cname, String gender, Date birthday, String cellphone, String email, String description, String ebable) {
+    public Customer(String cid, String cname, String gender, String birthday, String cellphone, String email, String description, String ebable) {
         this.cid = cid;
         this.cname = cname;
         this.gender = gender;
@@ -48,7 +48,8 @@ public class Customer {
         this.ebable = ebable;
     }
 
-    public Customer(String cid, String cname, String gender, Date birthday, String cellphone, String email, String description) {
+
+    public Customer(String cid, String cname, String gender, String birthday, String cellphone, String email, String description) {
         this.cid = cid;
         this.cname = cname;
         this.gender = gender;
@@ -65,20 +66,19 @@ public class Customer {
         this.email = email;
     }
 
-
     @Override
     public String toString() {
         return "Customer{" +
                 "cid='" + cid + '\'' +
                 ", cname='" + cname + '\'' +
                 ", gender='" + gender + '\'' +
-                ", birthday=" + birthday +
+                ", birthday='" + birthday + '\'' +
                 ", cellphone='" + cellphone + '\'' +
                 ", email='" + email + '\'' +
                 ", description='" + description + '\'' +
+                ", ebable='" + ebable + '\'' +
                 '}';
     }
-
 
     /**
      * 生成get、set方法
@@ -108,11 +108,11 @@ public class Customer {
         this.gender = gender;
     }
 
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 

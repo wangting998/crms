@@ -2,6 +2,9 @@ package com.bh.crms.service;
 
 import com.bh.crms.dao.CustomerDao;
 import com.bh.crms.pojo.Customer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 /**
@@ -9,10 +12,10 @@ import java.util.List;
  * @Author WWT
  * @Date 2021/1/27
  */
+@Repository
 public class CustomerService {
-    private CustomerDao customerDao = new CustomerDao();
-
-
+    //private CustomerDao customerDao = new CustomerDao();
+    @Autowired CustomerDao customerDao;
     /**
      * 添加数据/客户
      * @param c
@@ -56,10 +59,48 @@ public class CustomerService {
     }
 
     /**
-     * 高级搜索
+     * 高级搜索/多条件组合查询
      * @return
      */
-    public List<Customer> query(Customer criteria) {
-        return customerDao.query(criteria);
+    public List<Customer> queryCustomer(Customer criteria) {
+        return customerDao.queryCustomer(criteria);
+    }
+
+    /**
+     * 查询所有--带有分页功能
+     * @param index
+     * @param len
+     * @return
+     */
+    public List<Customer> findAllPage(int index,int len){
+        return customerDao.findAllPage(index,len);
+    }
+
+    /**
+     * 查询所有客户记录数
+     * @return
+     */
+    public int countFindAll(){
+        return customerDao.countFindAll();
+    }
+
+    /**
+     * 多条件查询中的分页
+     * @param criteria
+     * @param index
+     * @param len
+     * @return
+     */
+    public List<Customer> queryByPage(Customer criteria,int index,int len){
+        return customerDao.queryByPage(criteria,index,len);
+    }
+
+    /**
+     * 条件查询中的记录总数
+     * @param criteria
+     * @return
+     */
+    public int countQuery(Customer criteria){
+        return customerDao.countQueryPage(criteria);
     }
 }
